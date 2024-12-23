@@ -105,7 +105,7 @@ const login = async (req, res) => {
 var datetime = currentdate.getDay() + "/" + currentdate.getMonth() 
 + "/" + currentdate.getFullYear()
 
-    user.last_seen = datetime;
+    user.last_seen = Date.now();
     user.save();
 
     res.status(200).json({
