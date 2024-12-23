@@ -101,6 +101,13 @@ const login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
+    var currentdate = new Date();
+var datetime = currentdate.getDay() + "/" + currentdate.getMonth() 
++ "/" + currentdate.getFullYear()
+
+    user.last_seen = datetime;
+    user.save();
+
     res.status(200).json({
       token,
       type: 'Bearer',
