@@ -1,9 +1,7 @@
 const User = require('../models/User');
 const Otp = require('../models/Otp');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const cloudinary = require('../config/cloudinary');
-const bcrypt = require('bcryptjs');
 
 
 const getUser = async (req, res) => {
