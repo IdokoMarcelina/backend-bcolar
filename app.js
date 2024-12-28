@@ -1,7 +1,7 @@
 const express = require('express');
 require("dotenv").config();
 require("./src/config/connectDB")
-const PORT = process.env.PORT || 3300;
+const PORT = process.env.PORT || 3000;
 const authRoutes = require('./src/routes/auth');
 const otpRoutes = require('./src/routes/otp')
 const profileRoutes = require('./src/routes/profile')
