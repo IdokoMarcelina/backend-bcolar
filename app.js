@@ -9,8 +9,9 @@ const servicesRoutes = require('./src/routes/services')
 const cors = require('cors')
 const app = express();
 app.use(express.json());
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3300']
+  origin: '*'
 }));
 
 
