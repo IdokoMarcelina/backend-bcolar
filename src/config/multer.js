@@ -21,7 +21,7 @@ const profilePicStorage = new CloudinaryStorage({
 const productPicStorgae = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "profilePics",
+    folder: "productPics",
     allowed_formats: ["jpg", "jpeg", "png"],
   },
 });
