@@ -6,13 +6,12 @@ const cloudinary = require('../config/cloudinary');
 
 const getUser = async (req, res) => {
     try {
-      const userId = req.user?._id; // Assuming `protect` middleware attaches the user object to `req`
       
       if (!userId) {
         return res.status(401).json({ message: 'Unauthorized access.' });
       }
   
-      const user = await User.findById(userId).select('-password'); // Exclude the password field
+      const user = await User.findById(userId).select('-password');
       if (!user) {
         return res.status(404).json({ message: 'User not found.' });
       }
@@ -46,6 +45,7 @@ const getUser = async (req, res) => {
   
       if (user) {
         const { user_type } = user;
+        let cloudImage = null
   
         // Fields that both user and artisan can edit
         Object.assign(user, {
@@ -63,9 +63,24 @@ const getUser = async (req, res) => {
             skill: req.body.skill || user.skill,
             dateOfBirth: req.body.dateOfBirth || user.dateOfBirth,
             gender: req.body.gender || user.gender,
-            avatar: req.body.avatar || user.avatar,
+            // avatar: req.body.avatar || user.avatar,
             about: req.body.about || user.about,
+
+            
           });
+
+          if (req.body.avatar) {
+            try {
+              cloudImage = await cloudinary.uploader.upload(req.body.avatar, {
+                folder: "profilePics", 
+                resource_type: "image", 
+              });
+  
+              user.avatar = cloudImage.secure_url; 
+            } catch (error) {
+              return res.status(500).json({ message: "Error uploading image to Cloudinary.", error: error.message });
+            }
+          }
         }
   
         const updatedUser = await user.save();

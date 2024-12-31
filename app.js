@@ -8,7 +8,7 @@ const profileRoutes = require('./src/routes/profile')
 const servicesRoutes = require('./src/routes/services')
 const cors = require('cors')
 const app = express();
-app.use(express.json());
+app.use(express.json({limit: "10mb"}));
 const configuration = {origin: "*", 
   methods : ['GET', 'POST', 'PATCH', 'DELETE'], 
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -24,7 +24,7 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/service', servicesRoutes)
 
 app.get('/', (req, res) => {
-    res.send('Server is running');
+    res.send('Server is up andrunning');
   });
 
 

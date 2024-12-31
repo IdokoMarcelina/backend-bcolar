@@ -11,7 +11,7 @@ const updateLastSeen = async (req, res, next) => {
       next();
     } catch (error) {
       console.error('Error updating last seen:', error);
-      next(); // Proceed even if there's an error to avoid blocking the request
+      next(); 
     }
   };
   

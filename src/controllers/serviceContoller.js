@@ -5,13 +5,14 @@ const productPage = async (req, res)=>{
     try {
         const {productPic, title, category, description, date} = req.body
 
-        const Service = new Service({productPic, title, category, description, date})
+        const newService = new Service({productPic, title, category, description, date})
 
-        const savedService = await Service.save()
+        const savedService = await newService.save()
         res.status(201).json(savedService)
 
     } catch (error) {
-        res.status(500).json({message: 'error posting service', error})
+        console.error('Error posting service:', error);
+        res.status(500).json({message: 'error posting service', error })
     }
 }
 

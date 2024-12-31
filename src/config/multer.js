@@ -1,8 +1,8 @@
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("./cloudinary");
+const cloudinary = require("../utils/cloudinary");
 
-const storage = new CloudinaryStorage({
+const idCardstorage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: "id_cards", 
@@ -10,6 +10,41 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage });
+const profilePicStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "profilePics",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
 
-module.exports = upload;
+const productPicStorgae = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "profilePics",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
+
+const collaboPicStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "collaboPics",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+})
+
+
+
+
+const idCardUpload = multer({ storage: idCardstorage });
+const profilePicUpload = multer({storage: profilePicStorage})
+const productPicUpload = multer({storage: productPicStorgae})
+const collaboPicUpload = multer({storage: collaboPicStorage})
+
+module.exports = {
+  idCardUpload,
+  profilePicUpload,
+  productPicUpload,
+  collaboPicUpload
+};
