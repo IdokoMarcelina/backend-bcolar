@@ -15,5 +15,4 @@ const updateLastSeen = async (req, res, next) => {
     }
   };
   
-  module.exports = updateLastSeen;
-  
+  module.exports = updateLastSeen
