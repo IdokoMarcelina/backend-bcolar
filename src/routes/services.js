@@ -2,7 +2,7 @@ const express = require('express');
 const { productPage, getAllService, getArtisanPosts, deleteArtisanPost } = require('../controllers/serviceContoller');
 const multer = require('multer');
 const auth = require('../middleware/authmiddleware');
-const {  bookArtisanService } = require('../controllers/bookingController');
+const {  bookArtisanService, getUserBookings, cancelBooking } = require('../controllers/bookingController');
 const router = express.Router();
 
 const productPicUpload = multer({dest: 'productPics/'})
@@ -13,6 +13,8 @@ router.get('/getallService', getAllService);
 router.get('/getartisanpost',auth, getArtisanPosts);
 router.delete('/deleteartisanpost/:id',auth, deleteArtisanPost);
 router.post('/bookservice', auth, bookArtisanService)
+router.get('/getUserBookings', auth, getUserBookings)
+router.put('/cancelBooking/:bookingId', auth, cancelBooking)
 
 
 module.exports = router   

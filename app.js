@@ -10,7 +10,7 @@ const cors = require('cors')
 const app = express();
 app.use(express.json({limit: "10mb"}));
 const configuration = {origin: "*", 
-  methods : ['GET', 'POST', 'PATCH', 'DELETE'], 
+  methods : ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], 
   allowedHeaders: ["Content-Type", "Authorization"],
 credentials: true}
 app.use(cors(configuration));
