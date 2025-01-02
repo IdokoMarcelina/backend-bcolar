@@ -3,6 +3,7 @@ const { productPage, getAllService, getArtisanPosts, deleteArtisanPost } = requi
 const multer = require('multer');
 const auth = require('../middleware/authmiddleware');
 const {  bookArtisanService, getUserBookings, cancelBooking } = require('../controllers/bookingController');
+const getByCategory = require('../controllers/categoryController');
 const router = express.Router();
 
 const productPicUpload = multer({dest: 'productPics/'})
@@ -15,6 +16,7 @@ router.delete('/deleteartisanpost/:id',auth, deleteArtisanPost);
 router.post('/bookservice', auth, bookArtisanService)
 router.get('/getUserBookings', auth, getUserBookings)
 router.put('/cancelBooking/:bookingId', auth, cancelBooking)
+router.get('/getByCategory', auth, getByCategory)
 
 
 module.exports = router   
