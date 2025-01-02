@@ -97,9 +97,13 @@ const deleteArtisanPost = async (req, res) => {
     }
   };
 
+
+
+
 module.exports ={
     productPage,
     getAllService,
     getArtisanPosts,
     deleteArtisanPost,
+    
 }

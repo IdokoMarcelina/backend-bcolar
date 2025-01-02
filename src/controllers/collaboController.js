@@ -74,11 +74,37 @@ const getArticanCollaboPost = async (req, res) => {
       });
     }
   };
+
+  
+const deleteCollabo = async (req, res) => {
+    try {
+      const { collaboId } = req.params;
+  
+      if (!mongoose.Types.ObjectId.isValid(collaboId)) {
+        return res.status(400).json({ message: 'Invalid collaboration ID.' });
+      }
+  
+      const deletedCollabo = await Collabo.findByIdAndDelete(collaboId);
+  
+      if (!deletedCollabo) {
+        return res.status(404).json({ message: 'Collaboration not found.' });
+      }
+  
+      res.status(200).json({ message: 'Collaboration deleted successfully.' });
+    } catch (error) {
+      console.error('Error deleting collaboration:', error.message);
+      res.status(500).json({
+        message: 'Error deleting collaboration.',
+        error: error.message,
+      });
+    }
+  };
   
 
 
 module.exports = {
     collaboPage,
     getAllCollabo,
-    getArticanCollaboPost
+    getArticanCollaboPost,
+    deleteCollabo
 }
