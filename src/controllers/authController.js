@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const cloudinary = require('../config/cloudinary');
 const bcrypt = require('bcryptjs');
+const sendEmail = require('../utils/sendEmail')
 
 
 const register = async (req, res) => {
@@ -69,6 +70,14 @@ const register = async (req, res) => {
     const otp = crypto.randomInt(100000, 999999).toString();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); 
     await Otp.create({ user: user._id, otp, type: 'register', expires_at: expiresAt });
+
+    const subject = 'Your OTP Code for Registration';
+    const message = `Hello ${name},<br>Your OTP code for registration is <strong>${otp}</strong>. It will expire in 10 minutes.`;
+    const send_to = email;
+    const sent_from = process.env.EMAIL_USER;
+    const reply_to = process.env.EMAIL_USER;
+
+    await sendEmail(subject, message, send_to, sent_from, reply_to);
 
     res.status(201).json({ message: 'Registration successful. Check your email for OTP.' });
   } catch (error) {

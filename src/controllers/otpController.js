@@ -1,6 +1,8 @@
 const Otp = require('../models/Otp')
 const User = require('../models/User')
 const crypto = require('crypto')
+const sendEmail = require('../utils/sendEmail');  
+
 
 const verifyOtp = async (req, res) => {
     try {
@@ -39,6 +41,15 @@ const verifyOtp = async (req, res) => {
             console.log('Marking email as verified.');
             existingUser.email_verified = true;
             await existingUser.save();
+
+            // Send a success email after registration (optional)
+            const subject = 'Email Verified Successfully';
+            const message = `Hello ${existingUser.name},<br>Your email has been successfully verified. You can now proceed with your account activities.`;
+            const send_to = email;
+            const sent_from = process.env.EMAIL_USER;
+            const reply_to = process.env.EMAIL_USER;
+
+            await sendEmail(subject, message, send_to, sent_from, reply_to);
         }
 
         console.log('Deleting OTP...');
@@ -51,6 +62,7 @@ const verifyOtp = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.', error: error.message });
     }
 };
+
 
 const resendOtp = async (req, res) => {
     try {
@@ -68,7 +80,7 @@ const resendOtp = async (req, res) => {
         }
 
         const otp = crypto.randomInt(100000, 999999).toString();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+        const expiresAt = new Date(Date.now() + 20 * 60 * 1000); // 20 minutes from now
 
         if (existingOtp) {
             existingOtp.otp = otp;
@@ -78,6 +90,15 @@ const resendOtp = async (req, res) => {
             await Otp.create({ user: existingUser._id, otp, type, expires_at: expiresAt });
         }
 
+        // Send the OTP to the user's email using the sendEmail utility
+        const subject = 'Your OTP Code';
+        const message = `Your OTP code is: <strong>${otp}</strong>. It will expire in 20 minutes.`;
+        const send_to = email;
+        const sent_from = process.env.EMAIL_USER;
+        const reply_to = process.env.EMAIL_USER;
+
+        await sendEmail(subject, message, send_to, sent_from, reply_to);
+
         console.log(`OTP for ${email}: ${otp}`);
 
         return res.status(200).json({ message: 'OTP resent successfully.' });
@@ -85,6 +106,7 @@ const resendOtp = async (req, res) => {
         return res.status(500).json({ message: 'Server error.', error: error.message });
     }
 };
+
 
 
 module.exports = {verifyOtp,resendOtp};
