@@ -1,6 +1,6 @@
 const Service = require('../models/Service')
 const mongoose = require('mongoose');
-const cloudinary = require("cloudinary").v2; // Ensure Cloudinary is configured elsewhere in your app
+const cloudinary = require("cloudinary").v2; 
 
 const productPage = async (req, res) => {
   try {
@@ -22,7 +22,7 @@ const productPage = async (req, res) => {
     }
 
     const newService = new Service({
-      productPic: cloudImage.secure_url, // Use Cloudinary secure URL
+      productPic: cloudImage.secure_url, 
       title,
       category,
       description,
@@ -34,7 +34,7 @@ const productPage = async (req, res) => {
 
     res.status(201).json(savedService);
   }  catch (error) {
-    console.error('Error posting service:', error); // Log the full error to the console
+    console.error('Error posting service:', error); 
     res.status(500).json({
       message: 'Error posting service',
       error: error.message || 'An unknown error occurred',

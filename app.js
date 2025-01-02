@@ -6,6 +6,7 @@ const authRoutes = require('./src/routes/auth');
 const otpRoutes = require('./src/routes/otp')
 const profileRoutes = require('./src/routes/profile')
 const servicesRoutes = require('./src/routes/services')
+const collaboRoutes = require('./src/routes/collabo')
 const cors = require('cors')
 const app = express();
 app.use(express.json({limit: "10mb"}));
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/otp', otpRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/service', servicesRoutes)
+app.use('/api/collabo', collaboRoutes)
 
 app.get('/', (req, res) => {
     res.send('Server is up andrunning');
