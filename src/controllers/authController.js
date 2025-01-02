@@ -156,6 +156,14 @@ const forgetPassword = async (req, res) => {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
     await Otp.create({ user: user._id, otp, type: 'forgot-password', expires_at: expiresAt });
 
+    const subject = 'Your OTP Code for Password Reset';
+    const message = `Hello ${user.name},<br>Your OTP code for resetting your password is <strong>${otp}</strong>. It will expire in 10 minutes.`;
+    const send_to = email;
+    const sent_from = process.env.EMAIL_USER;
+    const reply_to = process.env.EMAIL_USER;
+
+    await sendEmail(subject, message, send_to, sent_from, reply_to);
+
     res.status(200).json({ message: 'OTP sent successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
@@ -165,16 +173,19 @@ const forgetPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { email, new_password, confirm_new_password } = req.body;
+    const { email, otp, new_password, confirm_new_password } = req.body;
 
-    if (!email || !new_password || !confirm_new_password) {
+    // Check for missing fields
+    if (!email || !otp || !new_password || !confirm_new_password) {
       return res.status(400).json({ message: 'Missing required fields.' });
     }
 
+    // Ensure the new password and confirm new password match
     if (new_password !== confirm_new_password) {
       return res.status(400).json({ message: 'Passwords do not match.' });
     }
 
+    // Validate new password against regex (uppercase, special character, etc.)
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
     if (!passwordRegex.test(new_password)) {
       return res.status(400).json({
@@ -182,19 +193,29 @@ const resetPassword = async (req, res) => {
       });
     }
 
+    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User with this email does not exist.' });
     }
 
+    // Verify the OTP (check if OTP is valid and not expired)
+    const otpExist = await Otp.findOne({ user: user._id, otp, type: 'forgot-password' });
+    if (!otpExist || otpExist.expires_at < new Date()) {
+      return res.status(400).json({ message: 'Invalid or expired OTP.' });
+    }
+
+    // Hash the new password and update the user record
     user.password = await bcrypt.hash(new_password, 10);
     await user.save();
 
+    // Return success message
     res.status(200).json({ message: 'Password reset successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
   }
 };
+
 
 module.exports = { 
   register, 
