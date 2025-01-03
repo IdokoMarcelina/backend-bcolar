@@ -1,14 +1,21 @@
 const express = require('express');
 require("dotenv").config();
 require("./src/config/connectDB")
+const http = require('http'); 
+const socketIo = require('socket.io');
 const PORT = process.env.PORT || 3000;
 const authRoutes = require('./src/routes/auth');
 const otpRoutes = require('./src/routes/otp')
 const profileRoutes = require('./src/routes/profile')
 const servicesRoutes = require('./src/routes/services')
 const collaboRoutes = require('./src/routes/collabo')
+
+
 const cors = require('cors')
 const app = express();
+const server = http.createServer(app); 
+const io = socketIo(server); 
+
 app.use(express.json({limit: "10mb"}));
 const configuration = {origin: "*", 
   methods : ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], 
