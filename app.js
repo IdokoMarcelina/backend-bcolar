@@ -8,6 +8,7 @@ const profileRoutes = require('./src/routes/profile')
 const servicesRoutes = require('./src/routes/services')
 const collaboRoutes = require('./src/routes/collabo')
 const chatRoutes = require('./src/routes/chat')
+const messageRoutes = require('./src/routes/messsages')
 
 
 const cors = require('cors')
@@ -28,6 +29,7 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/service', servicesRoutes)
 app.use('/api/collabo', collaboRoutes)
 app.use('/api/chat',chatRoutes)
+app.use('/api/message',messageRoutes)
 
 app.get('/', (req, res) => {
     res.send('Server is up andrunning');

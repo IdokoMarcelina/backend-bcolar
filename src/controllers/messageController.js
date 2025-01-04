@@ -1,43 +1,33 @@
-
-
 const Message = require('../models/Message'); 
 
-const socketIoHandler = (io) => {
-  io.on('connection', (socket) => {
-    console.log('A user connected');
 
-    socket.on('sendMessage', async (message) => {
-      console.log('Received message:', message);
+const createMessage = async (req,res)=>{
+    const {chatId, senderId, text} = req.body
 
-      const newMessage = new Message({
-        user: message.user,
-        text: message.text,
-      });
-      await newMessage.save();
+    const message =  new Message({
+        chatId, senderId, text
+    })
 
-      io.emit('receiveMessage', message);
-    });
-
-    socket.on('disconnect', () => {
-      console.log('A user disconnected');
-    });
-  });
-};
+    try {
+        const response = await message.save()
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 
 
+const getMessages = async (req,res)=>{
+    const {chatId} = req.params;
 
-const fetchAllMessages = async (req, res) => {
-  try {
-    const messages = await Message.find().sort({ createdAt: -1 }); 
-    res.json(messages);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error fetching messages' });
-  }
-};
-
+    try {
+        const messages = await Message.find({chatId})
+        res.status(200).json(messages)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
 module.exports = {
-    
-    socketIoHandler, 
-    fetchAllMessages 
-};
+    createMessage,
+    getMessages
+}

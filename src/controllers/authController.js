@@ -10,10 +10,10 @@ const sendEmail = require('../utils/sendEmail')
 const register = async (req, res) => {
   try {
 
-    const { name, email, password, user_type, phone, regionLGA, state, officeAddress, skill, dateOfBirth, gender } = req.body;
+    const { name, email, password, user_type, phone, LGA, state, officeAddress, skill, dateOfBirth, gender } = req.body;
 
    
-    if (!name || !email || !password || !phone || !regionLGA) {
+    if (!name || !email || !password || !phone || !LGA) {
       return res.status(400).json({ message: 'Missing required fields.' , });
     }
 
@@ -50,12 +50,12 @@ const register = async (req, res) => {
       phone,
       password,
       user_type,
-      regionLGA,
+      LGA,
+      state
     });
     
     if (user_type === 'artisan') {
       Object.assign(user, {
-        state,
         officeAddress,
         skill,
         dateOfBirth,
@@ -175,17 +175,14 @@ const resetPassword = async (req, res) => {
   try {
     const { email, otp, new_password, confirm_new_password } = req.body;
 
-    // Check for missing fields
     if (!email || !otp || !new_password || !confirm_new_password) {
       return res.status(400).json({ message: 'Missing required fields.' });
     }
 
-    // Ensure the new password and confirm new password match
     if (new_password !== confirm_new_password) {
       return res.status(400).json({ message: 'Passwords do not match.' });
     }
 
-    // Validate new password against regex (uppercase, special character, etc.)
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
     if (!passwordRegex.test(new_password)) {
       return res.status(400).json({
@@ -193,23 +190,19 @@ const resetPassword = async (req, res) => {
       });
     }
 
-    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User with this email does not exist.' });
     }
 
-    // Verify the OTP (check if OTP is valid and not expired)
     const otpExist = await Otp.findOne({ user: user._id, otp, type: 'forgot-password' });
     if (!otpExist || otpExist.expires_at < new Date()) {
       return res.status(400).json({ message: 'Invalid or expired OTP.' });
     }
 
-    // Hash the new password and update the user record
     user.password = await bcrypt.hash(new_password, 10);
     await user.save();
 
-    // Return success message
     res.status(200).json({ message: 'Password reset successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
