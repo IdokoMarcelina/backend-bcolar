@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 router.post('/createmessage',  createMessage)
-router.get('/fetchAllMessages',  getMessages );
+router.get('/fetchAllMessages/:chatId',  getMessages );
 
 
 

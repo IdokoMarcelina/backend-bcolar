@@ -9,6 +9,7 @@ const servicesRoutes = require('./src/routes/services')
 const collaboRoutes = require('./src/routes/collabo')
 const chatRoutes = require('./src/routes/chat')
 const messageRoutes = require('./src/routes/messsages')
+const ratingReviewRoutes = require('./src/routes/ratingReview')
 
 
 const cors = require('cors')
@@ -30,6 +31,7 @@ app.use('/api/service', servicesRoutes)
 app.use('/api/collabo', collaboRoutes)
 app.use('/api/chat',chatRoutes)
 app.use('/api/message',messageRoutes)
+app.use('/api/ratingReview',ratingReviewRoutes)
 
 app.get('/', (req, res) => {
     res.send('Server is up andrunning');
