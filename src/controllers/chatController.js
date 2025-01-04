@@ -17,7 +17,10 @@ const createChat = async (req, res)=>{
 
       const response = await  newChat.save()
 
-      res.status(200).json(response)
+      res.status(200).json({
+        message: "Chat created successfully.",
+        data: response,
+      })
     } catch (error) {
         console.log(error);
         
@@ -27,11 +30,11 @@ const createChat = async (req, res)=>{
 
 
 const findUserChats = async (req, res)=>{
-    const userId = req.params
+    const userId = req.params.userId
 
     try {
-        const chats = Chat.find({
-            members: {$in: [firstId, secondId]}
+        const chats = await Chat.find({
+            members: {$in: [userId]}
         })
         res.status(200).json(chats)
     } catch (error) {
@@ -41,7 +44,26 @@ const findUserChats = async (req, res)=>{
     }
 }
 
+const findChat = async (req, res)=>{
+    const {firstId, secondId} = req.params;
+
+    try {
+        const chat = await Chat.find({
+            members: {$all: [firstId, secondId]}
+        })
+
+        res.status(200).json(chat)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+        
+    }
+}
+
+
+
 module.exports = {
     createChat,
-    findUserChats
+    findUserChats,
+    findChat
 }

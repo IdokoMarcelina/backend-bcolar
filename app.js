@@ -7,6 +7,7 @@ const otpRoutes = require('./src/routes/otp')
 const profileRoutes = require('./src/routes/profile')
 const servicesRoutes = require('./src/routes/services')
 const collaboRoutes = require('./src/routes/collabo')
+const chatRoutes = require('./src/routes/chat')
 
 
 const cors = require('cors')
@@ -26,6 +27,7 @@ app.use('/api/otp', otpRoutes)
 app.use('/api/profile', profileRoutes)
 app.use('/api/service', servicesRoutes)
 app.use('/api/collabo', collaboRoutes)
+app.use('/api/chat',chatRoutes)
 
 app.get('/', (req, res) => {
     res.send('Server is up andrunning');
