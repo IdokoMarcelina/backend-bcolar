@@ -1,6 +1,19 @@
 const express = require('express');
 require("dotenv").config();
 require("./src/config/connectDB")
+const app = express();
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+
+
 const PORT = process.env.PORT || 3000;
 const authRoutes = require('./src/routes/auth');
 const otpRoutes = require('./src/routes/otp')
@@ -13,7 +26,7 @@ const ratingReviewRoutes = require('./src/routes/ratingReview')
 
 
 const cors = require('cors')
-const app = express();
+
 app.use(express.json({limit: "10mb"}));
 const configuration = {origin: "*", 
   methods : ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], 
@@ -21,8 +34,22 @@ const configuration = {origin: "*",
 credentials: true}
 app.use(cors(configuration));
 
+io.on("connection", (socket) => {
 
+  socket.on('chat_message', (msg) => {
+    // await createMessage(msg);
+    io.emit('chat_message_'+msg.receiverId, msg)
+  });
 
+  socket.on('error', (err) => {
+    console.error('Socket error:', err);
+  });
+
+  socket.on('disconnect', (socket) => {
+    console.log('User disconnected:', socket.id);
+  });
+
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/otp', otpRoutes)
@@ -38,4 +65,7 @@ app.get('/', (req, res) => {
   });
 
 
-app.listen(PORT, console.log('server is up'))
+
+server.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+})
