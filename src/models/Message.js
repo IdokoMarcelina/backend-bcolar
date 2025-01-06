@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
@@ -7,20 +6,26 @@ const messageSchema = new mongoose.Schema({
     required: true,
   },
   senderId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,  // Fixed typo here
+    ref: "User",
+    required: true,
+  },
+  receiverId: {
+    type: mongoose.Schema.Types.ObjectId,  // Fixed typo here
+    ref: "User",
     required: true,
   },
   text: {
     type: String,
     required: true,
   },
- 
-},
-
-{
-    timestamps: true
-}
-);
+  image: {
+    type: String,
+    required: false,  // Consider making this optional if images are not always present
+  },
+}, {
+  timestamps: true,
+});
 
 const Message = mongoose.model('Message', messageSchema);
 

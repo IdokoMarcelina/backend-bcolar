@@ -27,7 +27,10 @@ const getMessages = async (req,res)=>{
         res.status(500).json(error)
     }
 }
+
+
 module.exports = {
     createMessage,
-    getMessages
+    getMessages,
+
 }
