@@ -13,7 +13,7 @@ const register = async (req, res) => {
     const { name, email, password, user_type, phone, LGA, state, officeAddress, skill, dateOfBirth, gender } = req.body;
 
    
-    if (!name || !email || !password || !phone || !LGA) {
+    if (!name || !email || !password || !phone || !LGA ||!state) {
       return res.status(400).json({ message: 'Missing required fields.' , });
     }
 
@@ -36,7 +36,7 @@ const register = async (req, res) => {
 
     let cloudImage = null;
     if (user_type === 'artisan') {
-      if (!state || !officeAddress || !skill || !dateOfBirth || !gender || !req.body.idCard) {
+      if (!officeAddress || !skill || !dateOfBirth || !gender || !req.body.idCard) {
         return res.status(400).json({ message: 'Artisan-specific fields are missing.' });
       }
 
