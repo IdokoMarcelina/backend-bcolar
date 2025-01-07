@@ -1,6 +1,10 @@
 const express = require('express');
 require("dotenv").config();
 require("./src/config/connectDB")
+const User = require('./src/models/User');
+const Chat = require('./src/models/Chat');
+const messageModel = require('./src/models/Message');
+
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
@@ -41,7 +45,7 @@ app.use(cors(configuration));
 io.on("connection", (socket) => {
 
   socket.on('chat_message', (msg) => {
-    // await createMessage(msg);
+
     io.emit('chat_message_'+msg.receiverId, msg)
   });
 
@@ -64,70 +68,130 @@ app.use('/api/chat',chatRoutes)
 app.use('/api/message',messageRoutes)
 app.use('/api/ratingReview',ratingReviewRoutes)
 
-app.get('/', (req, res) => {
-    res.send('Server is up andrunning');
-  });
 
-app.post('/sendMessages/:id', auth, async (req, res)=>{
+app.post('/createChat', async (req, res) => {
+  const { firstId, secondId } = req.body;
 
   try {
-     const {text, image} = req.body
-     const {id: receiverId} = req.params
-     const senderId = req.user._id
+      const chat = await Chat.findOne({
+          members: { $all: [firstId, secondId] },
+      });
+      if (chat) return res.status(200).json(chat);
 
-    let imageurl;
-    if(image){
-      const uplaodResponse = await cloudinary.uploader(image);
-      imageurl = uplaodResponse.secure_url;
-    }
+      const newChat = new Chat({
+          members: [firstId, secondId],
+      });
 
-    const newMessage = new Message({
+      const response = await newChat.save();
+
+      res.status(200).json({
+          message: "Chat created successfully.",
+          data: response,
+      });
+  } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+  }
+});
+
+app.get('/findUserChats/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+      const chats = await Chat.find({
+          members: { $in: [userId] },
+      });
+      res.status(200).json(chats);
+  } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+  }
+});
+
+app.get('/findChat/:firstId/:secondId', async (req, res) => {
+  const { firstId, secondId } = req.params;
+
+  try {
+      const chat = await Chat.find({
+          members: { $all: [firstId, secondId] },
+      });
+
+      res.status(200).json(chat);
+  } catch (error) {
+      console.log(error);
+      res.status(500).json(error);
+  }
+});
+
+app.post('/createMessage', async (req, res) => {
+  const { chatId, senderId, receiverId, text } = req.body;
+
+  if (!chatId || !senderId || !receiverId || !text) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  const message = new Message({
+    chatId,
+    senderId,
+    text,
+  });
+
+  try {
+    const response = await message.save();
+
+    io.emit('chat_message_' + receiverId, {
+      chatId,
       senderId,
       receiverId,
       text,
-      image: imageurl,
-    })
+    });
 
-      await newMessage.save()
-      //todo: real time functionality
-
-      res.status(200).json(newMessage)
+    io.to(chatId).emit('new_message', response);
+    res.status(200).json(response);
   } catch (error) {
-    console.log("error in getUserforSidebar", error);
-      res.status(500).json(error)
+    console.error('Error creating message:', error);
+    res.status(500).json({ error: 'Failed to create message' });
   }
-})
-app.get('/getMessages/:id', auth, async (req, res)=>{
+});
+
+
+app.get('/getMessages/:chatId', async (req, res) => {
+  const { chatId } = req.params;
 
   try {
-      const { id:userToChatId } = req.params
-      const myId = req.user._id;
-      const messages = await Message.find({
-        $or: [
-          { senderId: myId, receiverId: userToChatId },
-          { senderId: userToChatId, receiverId: myId },
-        ],
-      })
-      res.status(200).json(messages)
+      const messages = await Message.find({ chatId });
+      res.status(200).json(messages);
   } catch (error) {
-    console.log("error in getUserforSidebar", error);
-      res.status(500).json(error)
+      res.status(500).json(error);
   }
-})
-app.get('/getUsersforSidebar', auth, async (req, res)=>{
+});
+
+
+app.get('/getSidebarMessages/:userId', async (req, res) => {
+  const userId = req.params.userId;
 
   try {
-      const loggedInUserId = req.user._id;
+    const messages = await Message.find({ $or: [{ senderId: userId }, { receiverId: userId }] })
+      .populate('senderId receiverId'); 
 
-      const filteredUsers = await User.find({_id: {$ne: loggedInUserId}}).select("-password");
-      res.status(200).json(filteredUsers)
+    if (!messages || messages.length === 0) {
+      return res.status(404).json({ message: 'No messages found for this user' });
+    };
+
+    res.status(200).json(messages);
   } catch (error) {
-    console.log("error in getUserforSidebar", error);
-      res.status(500).json(error)
+    console.error('Failed to fetch sidebar messages:', error);
+    res.status(500).json({ error: 'Failed to fetch sidebar messages' });
   }
-})
+});
 
 
+
+
+
+app.get('/', (req, res) => {
+    res.send('Server is up andrunning');
+  });
 
 
 

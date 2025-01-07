@@ -8,10 +8,10 @@ const seedData = async () => {
     // Seed new data
     const user = new User(
       {
-        name:'mimi',
+        name:'marcelina',
         email:'aitmacelina@gmail.com',
         phone:'07017569229',
-        password:'@Mimi1234',
+        password:'@Marcelina123',
         LGA:'yaba',
         user_type:'admin',
         state:'Lagos',
