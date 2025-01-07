@@ -65,7 +65,7 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/service', servicesRoutes)
 app.use('/api/collabo', collaboRoutes)
 app.use('/api/chat',chatRoutes)
-app.use('/api/message',messageRoutes)
+// app.use('/api/message',messageRoutes)
 app.use('/api/ratingReview',ratingReviewRoutes)
 
 
@@ -139,14 +139,17 @@ app.post('/createMessage', async (req, res) => {
   try {
     const response = await message.save();
 
-    io.emit('chat_message_' + receiverId, {
+   let emit = io.emit('chat_message_' + receiverId, {
       chatId,
       senderId,
       receiverId,
       text,
     });
 
-    io.to(chatId).emit('new_message', response);
+    console.log(emit,'chat_message_' + receiverId )
+
+    // io.to(chatId).emit('new_message', response);
+
     res.status(200).json(response);
   } catch (error) {
     console.error('Error creating message:', error);
