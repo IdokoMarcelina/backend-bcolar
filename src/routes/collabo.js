@@ -7,7 +7,7 @@ const router = express.Router();
 const productPicUpload = multer({dest: 'collaboPics/'})
 
 
-router.post('/collaboPage',auth, productPicUpload.array('collaboPic',5), collaboPage)
+router.post('/collaboPage',auth, productPicUpload.single('collaboPic'), collaboPage)
 router.get('/getAllCollabo',auth, getAllCollabo)
 router.get('/getArticanCollaboPost/:artisanId',auth, getArticanCollaboPost)
 router.delete('/deleteCollabo/:collaboId',auth, deleteCollabo)

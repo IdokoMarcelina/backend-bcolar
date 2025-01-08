@@ -4,19 +4,22 @@ const cloudinary = require("cloudinary").v2;
 
 const collaboPage = async (req, res) => {
   try {
-    const { collaboPic, category, description, requirements, date } = req.body;
-
-    if ( !category || !description || !requirements) {
+    const { category, description, requirements, date } = req.body;
+    const collaboPic= req.file
+    console.log(req.file)
+    
+    if (!collaboPic || !category || !description || ! requirements ) {
+      console.log(collaboPic)
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    let cloudImage = null;
+    let cloudImage = null
 
     try {
-      cloudImage = await cloudinary.uploader.upload(collaboPic, {
-        folder: "collaboPics", 
-        resource_type: "image", 
-      });
+      cloudImage = await cloudinary.uploader.upload(req.file.path,{
+        // folder: "collaboPics", 
+        // resource_type: "image", 
+      })
     } catch (error) {
       return res.status(500).json({ message: "Error uploading image to Cloudinary.", error: error.message });
     }

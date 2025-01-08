@@ -26,12 +26,15 @@ const productPicStorgae = new CloudinaryStorage({
   },
 });
 
-const collaboPicStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "collaboPics",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
+const collaboPicStorage = multer.diskStorage ({
+  // cloudinary,
+  // params: {
+  //   folder: "collaboPics",
+  //   allowed_formats: ["jpg", "jpeg", "png"],
+  // },
+  filename: (req,file,cb)=>{
+    cb(null , Date.now() + path.extname(file.originalname))
+  }
 })
 
 
