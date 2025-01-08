@@ -3,27 +3,21 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../utils/cloudinary");
 
 const idCardstorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "id_cards", 
-    allowed_formats: ["jpg", "jpeg", "png"], 
-  },
+  filename: (req,file,cb)=>{
+    cb(null , Date.now() + path.extname(file.originalname))
+  }
 });
 
 const profilePicStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "profilePics",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
+  filename: (req,file,cb)=>{
+    cb(null , Date.now() + path.extname(file.originalname))
+  }
 });
 
-const productPicStorgae = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "productPics",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
+const productPicStorgae = multer.diskStorage({
+  filename: (req,file,cb)=>{
+    cb(null , Date.now() + path.extname(file.originalname))
+  }
 });
 
 const collaboPicStorage = multer.diskStorage ({
@@ -31,7 +25,7 @@ const collaboPicStorage = multer.diskStorage ({
   // params: {
   //   folder: "collaboPics",
   //   allowed_formats: ["jpg", "jpeg", "png"],
-  // },
+  // }
   filename: (req,file,cb)=>{
     cb(null , Date.now() + path.extname(file.originalname))
   }

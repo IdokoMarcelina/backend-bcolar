@@ -36,11 +36,12 @@ const register = async (req, res) => {
 
     let cloudImage = null;
     if (user_type === 'artisan') {
-      if (!officeAddress || !skill || !dateOfBirth || !gender || !req.body.idCard) {
+      const idCard = req.file
+      if (!officeAddress || !skill || !dateOfBirth || !gender || !idCard ) {
         return res.status(400).json({ message: 'Artisan-specific fields are missing.' });
       }
 
-      cloudImage = await cloudinary.uploader.upload(req.body.idCard, { folder: 'id_cards' });
+      cloudImage = await cloudinary.uploader.upload(req.file.path, { });
     
     }
 

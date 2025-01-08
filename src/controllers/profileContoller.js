@@ -51,7 +51,7 @@ const getUser = async (req, res) => {
         Object.assign(user, {
           name: req.body.name || user.name,
           phone: req.body.phone || user.phone,
-          regionLGA: req.body.regionLGA || user.regionLGA,
+          LGA: req.body.regionLGA || user.LGA,
           bio: req.body.bio || user.bio,
         });
   
@@ -63,17 +63,18 @@ const getUser = async (req, res) => {
             skill: req.body.skill || user.skill,
             dateOfBirth: req.body.dateOfBirth || user.dateOfBirth,
             gender: req.body.gender || user.gender,
-            // avatar: req.body.avatar || user.avatar,
+            // avatar: req.file.avatar || user.avatar,
             about: req.body.about || user.about,
 
             
           });
 
-          if (req.body.avatar) {
+          const avatar = req.file
+          if (avatar) {
             try {
-              cloudImage = await cloudinary.uploader.upload(req.body.avatar, {
-                folder: "profilePics", 
-                resource_type: "image", 
+              cloudImage = await cloudinary.uploader.upload(req.file.path, {
+                // folder: "profilePics", 
+                // resource_type: "image", 
               });
   
               user.avatar = cloudImage.secure_url; 

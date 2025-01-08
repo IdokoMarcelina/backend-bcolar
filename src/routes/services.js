@@ -9,7 +9,7 @@ const router = express.Router();
 const productPicUpload = multer({dest: 'productPics/'})
 
 
-router.post('/productPage',auth, productPicUpload.array('productPic', 5), productPage);
+router.post('/productPage',auth, productPicUpload.single('productPic'), productPage);
 router.get('/getallService', getAllService);
 router.get('/getartisanpost',auth, getArtisanPosts);
 router.delete('/deleteartisanpost/:id',auth, deleteArtisanPost);

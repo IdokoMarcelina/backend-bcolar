@@ -35,7 +35,7 @@ const collaboPage = async (req, res) => {
 
     const savedCollabo = await newCollabo.save();
 
-    res.status(200).json({savedCollabo, success: ok});
+    res.status(200).json({savedCollabo, success: true});
   }  catch (error) {
     console.error('Error posting service:', error); 
     res.status(500).json({

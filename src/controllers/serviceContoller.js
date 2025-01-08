@@ -4,8 +4,8 @@ const cloudinary = require("cloudinary").v2;
 
 const productPage = async (req, res) => {
   try {
-    const { productPic, title, category, description, date } = req.body;
-
+    const { title, category, description, date } = req.body;
+    const productPic = req.file
     if (!productPic || !title || !category || !description) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -13,9 +13,9 @@ const productPage = async (req, res) => {
     let cloudImage = null;
 
     try {
-      cloudImage = await cloudinary.uploader.upload(productPic, {
-        folder: "productPics", 
-        resource_type: "image", 
+      cloudImage = await cloudinary.uploader.upload(req.file.path, {
+        // folder: "productPics", 
+        // resource_type: "image", 
       });
     } catch (error) {
       return res.status(500).json({ message: "Error uploading image to Cloudinary.", error: error.message });
@@ -32,7 +32,7 @@ const productPage = async (req, res) => {
 
     const savedService = await newService.save();
 
-    res.status(201).json(savedService);
+    res.status(200).json({savedService, success:true});
   }  catch (error) {
     console.error('Error posting service:', error); 
     res.status(500).json({
