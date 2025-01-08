@@ -7,7 +7,7 @@ const collaboPage = async (req, res) => {
     const { category, description, requirements, date } = req.body;
     const collaboPic= req.file
     console.log(req.file)
-    
+
     if (!collaboPic || !category || !description || ! requirements ) {
       console.log(collaboPic)
       return res.status(400).json({ message: "All fields are required." });
@@ -35,7 +35,7 @@ const collaboPage = async (req, res) => {
 
     const savedCollabo = await newCollabo.save();
 
-    res.status(201).json(savedCollabo);
+    res.status(200).json({savedCollabo, success: ok});
   }  catch (error) {
     console.error('Error posting service:', error); 
     res.status(500).json({
