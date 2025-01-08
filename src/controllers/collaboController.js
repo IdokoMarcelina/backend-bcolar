@@ -6,7 +6,7 @@ const collaboPage = async (req, res) => {
   try {
     const { collaboPic, category, description, requirements, date } = req.body;
 
-    if (!collaboPic || !category || !description || !requirements) {
+    if ( !category || !description || !requirements) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
