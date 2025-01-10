@@ -2,9 +2,10 @@
 const express = require('express');
 const multer = require('multer');
 const idCardUpload = multer({ dest: 'id_cards/' });
-const { register, login, forgetPassword, resetPassword, logout, getAllUsers } = require('../controllers/authController');
+const { register, login, forgetPassword, resetPassword, logout, getAllUsers, getArtisans } = require('../controllers/authController');
 const auth = require('../middleware/authmiddleware');
 const {seedData} = require('../../seed');
+const { getLeastRatedArtisans, getMostRatedArtisans } = require('../controllers/ratingAndReviewController');
 
 const router = express.Router();
 router.post('/register',idCardUpload.single('idCard'), register);
@@ -13,6 +14,9 @@ router.post('/forgetPassword', forgetPassword);
 router.post('/resetPassword', resetPassword);
 router.get('/logout', auth, logout);
 router.get('/getAllUsers', auth,  getAllUsers);
+router.get('/getAllArtisans', auth,  getArtisans);
+router.get('/least-rated', auth,  getLeastRatedArtisans);
+router.get('/most-rated', auth,  getMostRatedArtisans);
 router.get('/seed', seedData);
 
 // router.get('/getuser', getUser);

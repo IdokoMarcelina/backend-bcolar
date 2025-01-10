@@ -128,17 +128,33 @@ const login = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find({ user_type: 'user' });
 
     if (!users || users.length === 0) {
-      return res.status(404).json({ message: "No users found." });
+      return res.status(404).json({ message: 'No users found.' });
     }
 
     res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
   }
-}
+};
+
+const getArtisans = async (req, res) => {
+  try {
+    const artisans = await User.find({ user_type: 'artisan' });
+
+    if (!artisans || artisans.length === 0) {
+      return res.status(404).json({ message: 'No artisans found.' });
+    }
+
+    res.status(200).json({ artisans });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
+
 
 
 
@@ -233,5 +249,6 @@ module.exports = {
    resetPassword,
    logout,
    getAllUsers,
+   getArtisans
   
  };
