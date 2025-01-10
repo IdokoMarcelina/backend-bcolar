@@ -100,7 +100,7 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
-    const isPasswordValid = await user.comparePassword(password, user.password); // Use model method if available
+    const isPasswordValid = await user.comparePassword(password, user.password); 
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Invalid email or password.' });
     }
@@ -124,6 +124,21 @@ const login = async (req, res) => {
   }
 };
 
+
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found." });
+    }
+
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+}
 
 
 
@@ -217,5 +232,6 @@ module.exports = {
   forgetPassword,
    resetPassword,
    logout,
+   getAllUsers,
   
  };

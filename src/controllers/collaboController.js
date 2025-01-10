@@ -78,7 +78,69 @@ const getArticanCollaboPost = async (req, res) => {
     }
   };
 
+  const viewSpecificCollabo = async (req, res) => {
+    try {
+      const { id } = req.params;
+      // Use `findOne` to get the specific collabo
+      const collabo = await Collabo.findOne({ _id: id, userId: req.user._id });
   
+      console.log(`Fetching collabo for artisan ID: ${req.user._id} with collabo ID: ${id}`);
+  
+      if (!collabo) {
+        return res.status(404).json({ message: 'Collabo not found' });
+      }
+  
+      res.status(200).json(collabo);
+    } catch (error) {
+      console.error('Error fetching collabo:', error);
+      res.status(500).json({ message: 'An error occurred while fetching the collabo.' });
+    }
+  };
+  
+
+  const applyForCollabo = async (req,res)=>{
+    try {
+      const { id } = req.params;
+      const collabo = collabos.find(collabo => collabo.id === id);
+  
+      if (!collabo) {
+        return res.status(404).json({ message: 'Collabo not found' });
+      }
+  
+      const application = {
+        id: uuidv4(),
+        applicantId: req.userId,
+        collaboId: id,
+        profile: req.body.profile, // Applicant profile details
+      };
+  
+      collabo.applicants.push(application);
+      applications.push(application);
+  
+      res.status(201).json(application);
+    } catch (error) {
+      console.error('Error applying to collabo:', error);
+      res.status(500).json({ message: 'An error occurred while applying to the collabo.' });
+    }
+  }
+
+  const viewApplicationProfile = async (req,res)=>{
+    try {
+      const { id } = req.params;
+      const application = applications.find(app => app.id === id);
+  
+      if (!application) {
+        return res.status(404).json({ message: 'Application not found' });
+      }
+  
+      res.json(application.profile);
+    } catch (error) {
+      console.error('Error fetching application profile:', error);
+      res.status(500).json({ message: 'An error occurred while fetching the application profile.' });
+    }
+  }
+
+
 const deleteCollabo = async (req, res) => {
     try {
       const { collaboId } = req.params;
@@ -109,5 +171,8 @@ module.exports = {
     collaboPage,
     getAllCollabo,
     getArticanCollaboPost,
+    viewSpecificCollabo,
+    applyForCollabo,
+    viewApplicationProfile,
     deleteCollabo
 }

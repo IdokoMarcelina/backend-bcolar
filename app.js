@@ -19,6 +19,7 @@ const io = new Server(server, {
 
 
 
+
 const PORT = process.env.PORT || 3000;
 const authRoutes = require('./src/routes/auth');
 const otpRoutes = require('./src/routes/otp')
@@ -28,6 +29,7 @@ const collaboRoutes = require('./src/routes/collabo')
 const chatRoutes = require('./src/routes/chat')
 const messageRoutes = require('./src/routes/messsages')
 const ratingReviewRoutes = require('./src/routes/ratingReview')
+const adminRoutes = require('./src/routes/admin')
 
 
 
@@ -66,6 +68,7 @@ app.use('/api/profile', profileRoutes)
 app.use('/api/service', servicesRoutes)
 app.use('/api/collabo', collaboRoutes)
 app.use('/api/chat',chatRoutes)
+app.use('/api/admin',adminRoutes)
 // app.use('/api/message',messageRoutes)
 app.use('/api/ratingReview',ratingReviewRoutes)
 
