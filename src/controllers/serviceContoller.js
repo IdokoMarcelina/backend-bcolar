@@ -4,9 +4,9 @@ const cloudinary = require("cloudinary").v2;
 
 const productPage = async (req, res) => {
   try {
-    const { title, category, description, date } = req.body;
+    const { name, category, region, date } = req.body;
     const productPic = req.file
-    if (!productPic || !title || !category || !description) {
+    if (!productPic || !name || !category || !region) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -23,9 +23,9 @@ const productPage = async (req, res) => {
 
     const newService = new Service({
       productPic: cloudImage.secure_url, 
-      title,
+      name,
       category,
-      description,
+      region,
       date,
       userId: req.user._id,
     });

@@ -15,7 +15,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     allowedHeaders: ['Content-Type', 'Authorization'],
   },
-});
+})
 
 
 

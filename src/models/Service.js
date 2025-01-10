@@ -5,7 +5,7 @@ const ServiceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    title: {
+    name: {
         type: String,
         required: true
     },
@@ -13,7 +13,7 @@ const ServiceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
+    region: {
         type: String,
         required: true
     },
