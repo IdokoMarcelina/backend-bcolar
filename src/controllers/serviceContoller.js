@@ -5,7 +5,14 @@ const cloudinary = require("cloudinary").v2;
 const productPage = async (req, res) => {
   try {
     const { name, category, region, date } = req.body;
-    const productPic = req.file
+    const productPic = req.file;
+
+    // Check if the user has the "artisan" role
+    if (req.user.user_type !== 'artisan') {
+      console.log("User Role:", req.user.user_type); 
+      return res.status(403).json({ message: "Access denied. Only artisans can post a service." });
+    }
+
     if (!productPic || !name || !category || !region) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -14,15 +21,15 @@ const productPage = async (req, res) => {
 
     try {
       cloudImage = await cloudinary.uploader.upload(req.file.path, {
-        // folder: "productPics", 
-        // resource_type: "image", 
+        // folder: "productPics",
+        // resource_type: "image",
       });
     } catch (error) {
       return res.status(500).json({ message: "Error uploading image to Cloudinary.", error: error.message });
     }
 
     const newService = new Service({
-      productPic: cloudImage.secure_url, 
+      productPic: cloudImage.secure_url,
       name,
       category,
       region,
@@ -32,9 +39,9 @@ const productPage = async (req, res) => {
 
     const savedService = await newService.save();
 
-    res.status(200).json({savedService, success:true});
-  }  catch (error) {
-    console.error('Error posting service:', error); 
+    res.status(200).json({ savedService, success: true });
+  } catch (error) {
+    console.error('Error posting service:', error);
     res.status(500).json({
       message: 'Error posting service',
       error: error.message || 'An unknown error occurred',

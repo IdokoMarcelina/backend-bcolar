@@ -105,7 +105,36 @@ app.get('/findUserChats/:userId', async (req, res) => {
       const chats = await Chat.find({
           members: { $in: [userId] },
       });
-      res.status(200).json(chats);
+
+    // Step 2: For each chat, get the other member's ID
+    const otherMemberIds = chats.map((chat) =>
+      chat.members.find((member) => member != userId)
+    );
+
+    // Step 3: Fetch user details for the other members
+    const otherMembers = await User.find({ _id: { $in: otherMemberIds } });
+
+    // Step 4: Combine chat and user details
+    const result = chats.map((chat) => {
+
+      const otherMemberId = chat.members.find((member) => member != userId);
+
+      const otherMember = otherMembers.find((user) => user._id.equals(otherMemberId));
+
+      return {
+        id: chat._id,
+        members: chat.members,
+        otherMember: {
+          id: otherMember._id,
+          name: otherMember.name,
+          profilePicture: otherMember.avatar,
+        },
+      };
+    }).filter((chat) => chat !== null);
+
+    // 677f3ae860c1522be6893e73
+    
+      res.status(200).json(result);
   } catch (error) {
       console.log(error);
       res.status(500).json(error);
