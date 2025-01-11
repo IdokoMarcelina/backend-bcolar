@@ -2,12 +2,12 @@ const User = require('../models/User');
 
 const isAdmin = async (req, res, next) => {
   try {
-    if (req.user && req.user.role === 'admin') {
+    if (req.user && req.user.user_type === 'admin') {
       return next(); 
     }
     
     const user = await User.findById(req.user._id); 
-    if (user && user.role === 'admin') {
+    if (user && user.user_type === 'admin') {
       return next();
     }
 

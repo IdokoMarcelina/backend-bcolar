@@ -124,6 +124,16 @@ const login = async (req, res) => {
   }
 };
 
+const dashboard = async (req, res)=>{
+  try {
+    res.status(200).json({
+      user_id: req.user._id,
+      user_type: req.user.user_type, 
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user details', error: error.message });
+  }
+}
 
 
 const getAllUsers = async (req, res) => {
@@ -249,6 +259,7 @@ module.exports = {
    resetPassword,
    logout,
    getAllUsers,
-   getArtisans
+   getArtisans,
+   dashboard
   
  };
