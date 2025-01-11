@@ -47,7 +47,6 @@ const getUser = async (req, res) => {
         const { user_type } = user;
         let cloudImage = null
   
-        // Fields that both user and artisan can edit
         Object.assign(user, {
           name: req.body.name || user.name,
           phone: req.body.phone || user.phone,
@@ -55,7 +54,6 @@ const getUser = async (req, res) => {
           bio: req.body.bio || user.bio,
         });
   
-        // Additional fields that only artisans can edit
         if (user_type === 'artisan') {
           Object.assign(user, {
             state: req.body.state || user.state,
