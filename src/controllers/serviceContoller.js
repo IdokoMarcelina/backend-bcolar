@@ -7,7 +7,6 @@ const productPage = async (req, res) => {
     const { name, category, region, date } = req.body;
     const productPic = req.file;
 
-    // Check if the user has the "artisan" role
     if (req.user.user_type !== 'artisan') {
       console.log("User Role:", req.user.user_type); 
       return res.status(403).json({ message: "Access denied. Only artisans can post a service." });
@@ -54,7 +53,6 @@ const productPage = async (req, res) => {
 
 const getAllService = async (req, res)=>{
     try {
-
         const Allservices = await Service.find()
         res.json(Allservices)
     } catch (error) {

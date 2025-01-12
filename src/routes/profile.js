@@ -8,7 +8,7 @@ const updateLastSeen = require('../middleware/lastSeenMiddleware');
 const profilePicUpload = multer({ dest: 'profilePics/' });
 const router = express.Router();
 
-router.get('/getuser',auth,updateLastSeen, getUser);
+router.get('/getuser',auth, getUser);
 router.get('/loginstatus', loginStatus);
 router.patch('/updateuser',auth, profilePicUpload.single('avatar'),  updateUser);
 
