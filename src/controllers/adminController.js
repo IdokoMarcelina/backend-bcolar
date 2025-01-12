@@ -13,7 +13,7 @@ const assignAdminRole = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    user.role = 'admin';
+    user.user_type = 'admin';
     await user.save();
 
     res.status(200).json({ message: "User has been assigned admin role.", user });
