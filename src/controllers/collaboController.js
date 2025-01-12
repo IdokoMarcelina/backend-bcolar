@@ -8,6 +8,11 @@ const collaboPage = async (req, res) => {
     const collaboPic= req.file
     console.log(req.file)
 
+    if (req.user.user_type !== 'artisan') {
+      console.log("User Role:", req.user.user_type); 
+      return res.status(403).json({ message: "Access denied. Only artisans can post a collabo." });
+    }
+
     if (!collaboPic || !category || !description || ! requirements ) {
       console.log(collaboPic)
       return res.status(400).json({ message: "All fields are required." });
