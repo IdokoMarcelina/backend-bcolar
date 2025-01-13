@@ -13,7 +13,7 @@ router.post('/login', login);
 router.get('/mydashboard',auth, dashboard);
 router.post('/forgetPassword', forgetPassword);
 router.post('/resetPassword', resetPassword);
-router.get('/logout', auth, logout);
+router.post('/logout', auth, logout);
 router.get('/getAllUsers', auth,  getAllUsers);
 router.get('/getAllArtisans', auth,  getArtisans);
 router.get('/least-rated', auth,  getLeastRatedArtisans);
