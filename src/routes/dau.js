@@ -7,5 +7,6 @@ const router = express.Router();
 
 
 router.post("/collect-dau", dauController.collectDAU);
+router.get("/getdau", dauController.getDau);
 
 module.exports = router;

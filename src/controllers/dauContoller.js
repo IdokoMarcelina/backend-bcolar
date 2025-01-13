@@ -29,4 +29,13 @@ const collectDAU = async (req, res) => {
   }
 };
 
-module.exports = { collectDAU };
+const getDau =  async (req, res) => {
+    try {
+      const dauData = await DAU.find();  // Fetch all DAU records
+      res.status(200).json(dauData);  // Return the data as a response
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching DAU data" });
+    }
+  };
+
+module.exports = { collectDAU ,getDau};
