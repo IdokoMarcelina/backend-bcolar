@@ -1,6 +1,8 @@
 const express = require('express');
 require("dotenv").config();
 require("./src/config/connectDB")
+const cron = require("node-cron");
+
 const User = require('./src/models/User');
 const Chat = require('./src/models/Chat');
 const messageModel = require('./src/models/Message');
@@ -30,6 +32,7 @@ const chatRoutes = require('./src/routes/chat')
 const messageRoutes = require('./src/routes/messsages')
 const ratingReviewRoutes = require('./src/routes/ratingReview')
 const adminRoutes = require('./src/routes/admin')
+const dauRoutes = require('./src/routes/dau')
 
 
 
@@ -69,6 +72,7 @@ app.use('/api/service', servicesRoutes)
 app.use('/api/collabo', collaboRoutes)
 app.use('/api/chat',chatRoutes)
 app.use('/api/admin',adminRoutes)
+app.use('/api/dau',dauRoutes)
 // app.use('/api/message',messageRoutes)
 app.use('/api/ratingReview',ratingReviewRoutes)
 
@@ -222,6 +226,16 @@ app.get('/getSidebarMessages/:userId', async (req, res) => {
 });
 
 
+
+// Schedule DAU collection at midnight every day
+cron.schedule("0 0 * * *", async () => {
+  try {
+    await dauController.collectDAU();
+    console.log("DAU data collected at midnight.");
+  } catch (error) {
+    console.error("Error collecting DAU data at midnight:", error);
+  }
+});
 
 
 

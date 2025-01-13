@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     skill:{type:[], required:false},
     about:{type:String, required:false},
     lastSeen: { type: Date, default: Date.now },
+    lastLogin: { type: Date, default: null },
     email_verified: { type: Boolean, default: false },
     status: { type: Boolean, default: false },
     user_type: { type: String, enum: ['admin', 'user', 'artisan'], default: 'user' },

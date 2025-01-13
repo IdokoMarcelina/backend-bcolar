@@ -112,6 +112,7 @@ const login = async (req, res) => {
     );
 
     user.lastSeen = Date.now();
+    user.lastLogin = new Date();
     user.save();
 
     res.status(200).json({
