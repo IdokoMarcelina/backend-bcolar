@@ -119,6 +119,7 @@ const login = async (req, res) => {
       token,
       type: 'Bearer',
       expires: new Date().setHours(new Date().getHours() + 24),
+      user: user
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
