@@ -2,6 +2,7 @@ const express = require('express');
 require("dotenv").config();
 require("./src/config/connectDB")
 const cron = require("node-cron");
+const dau = require("./src/controllers/dauContoller")
 
 const User = require('./src/models/User');
 const Chat = require('./src/models/Chat');
@@ -230,7 +231,7 @@ app.get('/getSidebarMessages/:userId', async (req, res) => {
 // Schedule DAU collection at midnight every day
 cron.schedule("0 0 * * *", async () => {
   try {
-    await dauController.collectDAU();
+    await dau.collectDAU();
     console.log("DAU data collected at midnight.");
   } catch (error) {
     console.error("Error collecting DAU data at midnight:", error);
