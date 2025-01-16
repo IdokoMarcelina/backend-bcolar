@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const cloudinary = require('../config/cloudinary');
 const bcrypt = require('bcryptjs');
 const sendEmail = require('../utils/sendEmail')
-
+const dau = require("./dauContoller")
 
 const register = async (req, res) => {
   try {
@@ -113,6 +113,7 @@ const login = async (req, res) => {
 
     user.lastSeen = Date.now();
     user.lastLogin = new Date();
+    await dau.collectDAU(req, res); 
     user.save();
 
     res.status(200).json({
@@ -121,6 +122,11 @@ const login = async (req, res) => {
       expires: new Date().setHours(new Date().getHours() + 24),
       user: user
     });
+
+
+    
+
+
   } catch (error) {
     res.status(500).json({ message: 'Server error.', error: error.message });
   }
