@@ -31,8 +31,8 @@ const collectDAU = async (req, res) => {
 
 const getDau =  async (req, res) => {
     try {
-      const dauData = await DAU.find();  // Fetch all DAU records
-      res.status(200).json(dauData);  // Return the data as a response
+      const dauData = await DAU.find();  
+      res.status(200).json(dauData);  
     } catch (error) {
       res.status(500).json({ message: "Error fetching DAU data" });
     }

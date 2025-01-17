@@ -1,4 +1,5 @@
 const Collabo = require('../models/Collabo')
+const Application = require("../models/Application");
 const mongoose = require('mongoose');
 const cloudinary = require("cloudinary").v2; 
 
@@ -86,7 +87,7 @@ const getArticanCollaboPost = async (req, res) => {
   const viewSpecificCollabo = async (req, res) => {
     try {
       const { id } = req.params;
-      // Use `findOne` to get the specific collabo
+
       const collabo = await Collabo.findOne({ _id: id, userId: req.user._id });
   
       console.log(`Fetching collabo for artisan ID: ${req.user._id} with collabo ID: ${id}`);
@@ -103,47 +104,50 @@ const getArticanCollaboPost = async (req, res) => {
   };
   
 
-  const applyForCollabo = async (req,res)=>{
+  const applyForCollabo = async (req, res) => {
     try {
-      const { id } = req.params;
-      const collabo = collabos.find(collabo => collabo.id === id);
-  
-      if (!collabo) {
-        return res.status(404).json({ message: 'Collabo not found' });
-      }
-  
-      const application = {
-        id: uuidv4(),
-        applicantId: req.userId,
-        collaboId: id,
-        profile: req.body.profile, // Applicant profile details
-      };
-  
-      collabo.applicants.push(application);
-      applications.push(application);
-  
-      res.status(201).json(application);
-    } catch (error) {
-      console.error('Error applying to collabo:', error);
-      res.status(500).json({ message: 'An error occurred while applying to the collabo.' });
-    }
-  }
+        const { id } = req.params; // Collabo ID
+        const userId = req.user._id; // User applying for collabo
 
-  const viewApplicationProfile = async (req,res)=>{
-    try {
-      const { id } = req.params;
-      const application = applications.find(app => app.id === id);
-  
-      if (!application) {
-        return res.status(404).json({ message: 'Application not found' });
-      }
-  
-      res.json(application.profile);
+        const collabo = await Collabo.findById(id);
+        if (!collabo) {
+            return res.status(404).json({ message: "Collabo not found" });
+        }
+
+        // Check if the user has already applied
+        const alreadyApplied = collabo.applicants.some(applicant => applicant.userId.toString() === userId.toString());
+        if (alreadyApplied) {
+            return res.status(400).json({ message: "You have already applied for this collabo" });
+        }
+
+        // Add user to applicants list
+        collabo.applicants.push({ userId });
+        await collabo.save();
+
+        res.status(201).json({ message: "Application submitted successfully" });
     } catch (error) {
-      console.error('Error fetching application profile:', error);
-      res.status(500).json({ message: 'An error occurred while fetching the application profile.' });
+        console.error("Error applying to collabo:", error);
+        res.status(500).json({ message: "An error occurred while applying to the collabo." });
     }
+};
+
+
+const viewApplicationProfile = async (req, res) => {
+  try {
+      const { collaboId } = req.params;
+
+      const collabo = await Collabo.findById(collaboId).populate("applicants.userId", "name email phone avatar");
+      if (!collabo) {
+          return res.status(404).json({ message: "Collabo not found" });
+      }
+
+      res.status(200).json({ applicants: collabo.applicants });
+  } catch (error) {
+      console.error("Error fetching application profiles:", error);
+      res.status(500).json({ message: "An error occurred while fetching applications." });
   }
+};
+
 
 
 const deleteCollabo = async (req, res) => {
@@ -169,6 +173,33 @@ const deleteCollabo = async (req, res) => {
       });
     }
   };
+
+
+const viewCollaboApplicants = async (req, res) => {
+  try {
+    const { collaboId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(collaboId)) {
+      return res.status(400).json({ message: "Invalid Collabo ID." });
+    }
+
+    // Fetch all applications where collaboId matches
+    const applicants = await Application.find({ collaboId }).populate(
+      "applicantId",
+      "name email avatar bio skill about"
+    );
+
+    if (!applicants.length) {
+      return res.status(404).json({ message: "No applicants found for this Collabo." });
+    }
+
+    res.status(200).json(applicants);
+  } catch (error) {
+    console.error("Error fetching applicants:", error);
+    res.status(500).json({ message: "An error occurred while fetching applicants." });
+  }
+};
+
   
 
 
@@ -179,5 +210,6 @@ module.exports = {
     viewSpecificCollabo,
     applyForCollabo,
     viewApplicationProfile,
+    viewCollaboApplicants,
     deleteCollabo
 }
