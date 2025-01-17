@@ -9,7 +9,7 @@ const productPicUpload = multer({dest: 'collaboPics/'})
 
 
 router.post('/collaboPage',auth, productPicUpload.single('collaboPic'), collaboPage)
-router.get('/getAllCollabo',auth, getAllCollabo)
+router.get('/getAllCollabo', getAllCollabo)
 router.get('/getArticanCollaboPost/:artisanId',auth, getArticanCollaboPost)
 router.get('/viewSpecificCollabo/:id',auth, viewSpecificCollabo)
 router.get('/viewApplicationProfile/:id',auth, viewApplicationProfile)
