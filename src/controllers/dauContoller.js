@@ -22,7 +22,7 @@ const collectDAU = async (req, res) => {
       await newDAU.save();
     }
 
-    res.status(200).json({ message: "DAU data collected successfully" });
+    // res.status(200).json({ message: "DAU data collected successfully" });
   } catch (error) {
     console.error("Error collecting DAU data:", error);
     res.status(500).json({ message: "Error collecting DAU data" });
