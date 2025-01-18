@@ -91,7 +91,7 @@ const getUser = async (req, res) => {
           name: updatedUser.name,
           email: updatedUser.email,
           phone: updatedUser.phone,
-          regionLGA: updatedUser.regionLGA,
+          LGA: updatedUser.LGA,
           state: updatedUser.state,
           officeAddress: updatedUser.officeAddress,
           skill: updatedUser.skill,
