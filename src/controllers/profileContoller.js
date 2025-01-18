@@ -5,22 +5,24 @@ const cloudinary = require('../config/cloudinary');
 
 
 const getUser = async (req, res) => {
-    try {
-      
-      if (!userId) {
-        return res.status(401).json({ message: 'Unauthorized access.' });
-      }
-  
-      const user = await User.findById(userId).select('-password');
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
-      }
-  
-      res.status(200).json({ message: 'User retrieved successfully.', user });
-    } catch (error) {
-      res.status(500).json({ message: 'Server error.', error: error.message });
+  try {
+    const userId = req.user._id; // Access the user ID from req.user, which is set by the auth middleware
+    
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized access.' });
     }
-  };
+
+    const user = await User.findById(userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'User retrieved successfully.', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error.', error: error.message });
+  }
+};
+
   
 
   const loginStatus = async (req,res)=>{
