@@ -11,7 +11,7 @@ const productPicUpload = multer({dest: 'productPics/'})
 
 router.post('/productPage',auth, productPicUpload.single('productPic'), productPage);
 router.get('/getallService', getAllService);
-router.get('/getartisanpost/:artisanId',auth, getArtisanPosts);
+router.get('/getartisanpost',auth, getArtisanPosts);
 router.delete('/deleteartisanpost/:id',auth, deleteArtisanPost);
 router.post('/bookservice', auth, bookArtisanService)
 router.get('/getUserBookings', auth, getUserBookings)
