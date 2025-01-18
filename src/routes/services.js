@@ -16,7 +16,7 @@ router.delete('/deleteartisanpost/:id',auth, deleteArtisanPost);
 router.post('/bookservice', auth, bookArtisanService)
 router.get('/getUserBookings', auth, getUserBookings)
 router.put('/cancelBooking/:bookingId', auth, cancelBooking)
-router.get('/getByCategory', auth, getByCategory)
+router.get('/getByCategory', getByCategory)
 
 
 module.exports = router   

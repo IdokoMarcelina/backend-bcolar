@@ -64,7 +64,7 @@ const getAllService = async (req, res)=>{
 
 const getArtisanPosts = async (req, res) => {
   try {
-    const artisanId = req.user._id;
+    const artisanId = req.params;
 
     const artisanObjectId = new mongoose.Types.ObjectId(artisanId);
 
