@@ -2,10 +2,10 @@ const RatingReview = require('../models/RatingAndReview');
 const User = require('../models/User');
 
 const createRatingReview = async (req, res) => {
-  const { userId, productId, rating, review } = req.body;
+  const { userId, rating, review } = req.body;
 
   try {
-    const existingReview = await RatingReview.findOne({ userId, productId });
+    const existingReview = await RatingReview.findOne({ userId });
 
     if (existingReview) {
       existingReview.rating = rating;
@@ -16,7 +16,6 @@ const createRatingReview = async (req, res) => {
 
     const newRatingReview = new RatingReview({
       userId,
-      productId,
       rating,
       review,
     });
@@ -30,10 +29,10 @@ const createRatingReview = async (req, res) => {
 };
 
 const getProductReviews = async (req, res) => {
-  const { productId } = req.params;
+  const { userId } = req.params;
 
   try {
-    const reviews = await RatingReview.find({ productId }).populate('userId', 'name');
+    const reviews = await RatingReview.find({ userId }).populate('userId', 'name');
     res.status(200).json(reviews);
   } catch (error) {
     console.error(error);
@@ -42,10 +41,10 @@ const getProductReviews = async (req, res) => {
 };
 
 const getProductAverageRating = async (req, res) => {
-  const { productId } = req.params;
+  const { userId } = req.params;
 
   try {
-    const reviews = await RatingReview.find({ productId });
+    const reviews = await RatingReview.find({ userId });
 
     const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
 
