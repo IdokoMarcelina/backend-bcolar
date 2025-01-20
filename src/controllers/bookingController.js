@@ -21,7 +21,7 @@ const bookArtisanService = async (req, res) => {
     const newBooking = new Booking({
       userId: req.user._id,
       artisanId,
-      bookingDate: new Date(bookingDate),
+      bookingDate: (new Date(bookingDate)).toISOString,
       description,
     });
 

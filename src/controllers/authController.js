@@ -21,12 +21,12 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'Password must be at least 6 characters.' });
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({
-        message: 'Password must contain at least one uppercase letter and one special character.',
-      });
-    }
+    // const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+    // if (!passwordRegex.test(password)) {
+    //   return res.status(400).json({
+    //     message: 'Password must contain at least one uppercase letter and one special character.',
+    //   });
+    // }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
