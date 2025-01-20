@@ -47,8 +47,9 @@ const getUser = async (req, res) => {
   
       if (user) {
         const { user_type } = user;
-        let cloudImage = null
+        let cloudImage = null;
   
+        // Update other user fields
         Object.assign(user, {
           name: req.body.name || user.name,
           phone: req.body.phone || user.phone,
@@ -56,6 +57,7 @@ const getUser = async (req, res) => {
           bio: req.body.bio || user.bio,
         });
   
+        // Handle artisan-specific fields
         if (user_type === 'artisan') {
           Object.assign(user, {
             state: req.body.state || user.state,
@@ -63,24 +65,21 @@ const getUser = async (req, res) => {
             skill: req.body.skill || user.skill,
             dateOfBirth: req.body.dateOfBirth || user.dateOfBirth,
             gender: req.body.gender || user.gender,
-            // avatar: req.file.avatar || user.avatar,
             about: req.body.about || user.about,
-
-            
           });
-
-          const avatar = req.file
-          if (avatar) {
-            try {
-              cloudImage = await cloudinary.uploader.upload(req.file.path, {
-                // folder: "profilePics", 
-                // resource_type: "image", 
-              });
+        }
   
-              user.avatar = cloudImage.secure_url; 
-            } catch (error) {
-              return res.status(500).json({ message: "Error uploading image to Cloudinary.", error: error.message });
-            }
+        // Avatar update (for all users, not just artisans)
+        if (req.file) {
+          try {
+            cloudImage = await cloudinary.uploader.upload(req.file.path, {
+              folder: "profilePics",  // Optional: Folder in Cloudinary
+            });
+  
+            // Save avatar URL
+            user.avatar = cloudImage.secure_url;
+          } catch (error) {
+            return res.status(500).json({ message: "Error uploading image to Cloudinary.", error: error.message });
           }
         }
   
@@ -109,6 +108,7 @@ const getUser = async (req, res) => {
       res.status(500).json({ message: 'Server error.', error: error.message });
     }
   };
+  
   
 
 
