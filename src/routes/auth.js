@@ -10,7 +10,7 @@ const { getLeastRatedArtisans, getMostRatedArtisans } = require('../controllers/
 const router = express.Router();
 router.post('/register',idCardUpload.single('idCard'), register);
 router.post('/login', login);
-router.post('/getuserid', getUser);
+router.get('/getuserid', getUser);
 router.get('/mydashboard',auth, dashboard);
 router.post('/forgetPassword', forgetPassword);
 router.post('/resetPassword', resetPassword);
