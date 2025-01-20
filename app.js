@@ -82,11 +82,21 @@ app.post('/createChat', async (req, res) => {
   const { firstId, secondId } = req.body;
 
   try {
-      const chat = await Chat.findOne({
+      let chat = await Chat.findOne({
           members: { $all: [firstId, secondId] },
       });
-      if (chat) return res.status(200).json(chat);
 
+      if (chat) {
+          // Update timestamp or any other required field
+          chat.updatedAt = new Date();
+          await chat.save();
+          return res.status(200).json({
+              message: "Chat already exists, updated timestamp.",
+              data: chat,
+          });
+      }
+
+      // Create new chat if it doesn't exist
       const newChat = new Chat({
           members: [firstId, secondId],
       });
@@ -97,11 +107,13 @@ app.post('/createChat', async (req, res) => {
           message: "Chat created successfully.",
           data: response,
       });
+
   } catch (error) {
-      console.log(error);
-      res.status(500).json(error);
+      console.error("Error creating/updating chat:", error);
+      res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
+
 
 app.get('/findUserChats/:userId', async (req, res) => {
   const userId = req.params.userId;
@@ -141,7 +153,6 @@ app.get('/findUserChats/:userId', async (req, res) => {
     
       res.status(200).json(result);
   } catch (error) {
-      console.log(error);
       res.status(500).json(error);
   }
 });
