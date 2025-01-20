@@ -82,12 +82,13 @@ app.post('/createChat', async (req, res) => {
   const { firstId, secondId } = req.body;
 
   try {
+      // Check if a chat already exists between firstId and secondId
       let chat = await Chat.findOne({
           members: { $all: [firstId, secondId] },
       });
 
       if (chat) {
-          // Update timestamp or any other required field
+          // If chat exists, update the timestamp and return it
           chat.updatedAt = new Date();
           await chat.save();
           return res.status(200).json({
@@ -96,15 +97,15 @@ app.post('/createChat', async (req, res) => {
           });
       }
 
-      // Create new chat if it doesn't exist
+      // If chat doesn't exist, create a new one
       const newChat = new Chat({
           members: [firstId, secondId],
       });
 
       const response = await newChat.save();
 
-      res.status(200).json({
-          message: "Chat created successfully.",
+      res.status(201).json({
+          message: "New chat created successfully.",
           data: response,
       });
 
@@ -113,7 +114,6 @@ app.post('/createChat', async (req, res) => {
       res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
-
 
 app.get('/findUserChats/:userId', async (req, res) => {
   const userId = req.params.userId;
