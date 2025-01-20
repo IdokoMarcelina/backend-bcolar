@@ -175,7 +175,7 @@ const getArtisans = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const { userId } = req.params; 
+    const { userId } = req.query; 
 
     if (!userId) {
       return res.status(400).json({ });
@@ -187,7 +187,6 @@ const getUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    console.log(user);
     return res.status(200).json({ user:user });
 
   }catch{
